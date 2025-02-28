@@ -8,14 +8,14 @@ from numpy import loadtxt
 from keras.models import Sequential
 from keras.layers import Dense
 from scikeras.wrappers import KerasClassifier, KerasRegressor
-from keras.utils import np_utils
+from keras.utils import to_categorical
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import LabelEncoder, normalize
 from sklearn.pipeline import Pipeline
 import time
-import middle_select as MS
-import consensus as CS
+import preprocessing.middle_select as MS
+import preprocessing.consensus as CS
 import math
 
 start_time = time.time()
@@ -24,19 +24,19 @@ random.seed(0)
 
 
 #catching any erroneous inputs before we get started.
-if len(sys.argv) != 9:
-    print("you are missing one of your inputs when calling this function: python ML_neural.py cut_ends activation neurons epochs batch_size depth target_id consensus_type")
+if len(sys.argv) != 8:
+    print("you are missing one of your inputs when calling this function: python ML_saving.py cut_ends activation neurons epochs batch_size depth consensus_type")
     quit()
     
-print(sys.argv)
+
 cut_ends = int(sys.argv[1])
 act = sys.argv[2]
 neurons = int(sys.argv[3])
 epochs = int(sys.argv[4])
 batch_size = int(sys.argv[5])
 depth = int(sys.argv[6])
-target_id = int(sys.argv[7])
-consensus_type = sys.argv[8]
+target_id = 1
+consensus_type = sys.argv[7]
 
 if cut_ends > 14922 or cut_ends < 0:
     print("cut_ends value should be between 0 and 14922, inclusive, please run again with proper input")
@@ -48,12 +48,15 @@ if depth < 2:
 
 
 #load training and testing data (added ../ to keep the data files in the orginal directory, remove if they are in the same directory)
-training_data = pd.read_csv('wyup_training_data.csv')
-#print(len(training_data))
-test_data = pd.read_csv('wyup_fixed_test.csv')
+training_data = pd.DataFrame()
+for index in range(0,10):
+    training_data = pd.concat([training_data, pd.read_csv('../../datasets/wyup_train_{}.csv'.format(index), delimiter = ',', index_col = 0)])
+
+
+test_data = pd.read_csv('../../datasets/wyup_fixed_test.csv')
 test_data = test_data.iloc[:,1:]
 
-#print(test_data)
+
 #establish the base list, must be in alphabetical order, which you can also input to the encoder for each option (if we want to consider deletions that will come first alphabetically, just a note for future reference) this WILL give us N's if necessary but some care will need to be taken:
 base_list = ['A', 'C', 'G', 'N', 'T']
 encoder = LabelEncoder()
@@ -103,8 +106,8 @@ encoded_targets_test = encoder.transform(test_target)
 
 
 # convert integers to dummy variables (i.e. one hot encoded)
-training_target = np_utils.to_categorical(encoded_targets_training)
-test_target = np_utils.to_categorical(encoded_targets_test)
+training_target = to_categorical(encoded_targets_training)
+test_target = to_categorical(encoded_targets_test)
 
 #the target variables in column order are in alphabetical order, ACGNT
 
@@ -201,23 +204,4 @@ if acc > 0.90:
     model.save('saved_models/'+model_name)
 else:
     print(model_name + " does not have high enough accuracy to save model")
-quit()
 
-
-
-# can figure out printing later, so far the code works.
-with open('consensus_accuracies.txt', 'w') as f:
-    for line in lines:
-        f.write(line)
-        f.write('\n')
-        
-end_time = time.time()
-print("all data with batch size of 5", end_time-start_time, "seconds")
-quit()
-
-
-results = cross_val_score(estimator, X, dummy_y, cv=kfold)
-print("Baseline: %.10f%% (%.10f%%)" % (results.mean()*100, results.std()*100))
-
-end_time = time.time()
-print("all data with batch size of 5", end_time-start_time, "seconds")
