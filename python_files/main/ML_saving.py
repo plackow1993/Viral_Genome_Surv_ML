@@ -7,7 +7,7 @@ import sys
 from numpy import loadtxt
 from keras.models import Sequential
 from keras.layers import Dense
-from scikeras.wrappers import KerasClassifier, KerasRegressor
+
 from keras.utils import to_categorical
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
@@ -201,7 +201,7 @@ print(middle_kept, act, epochs, batch_size, neurons, consensus_type, depth, acc)
 #print('middle_kept =', middle_kept, ", activation function =",act, ', epochs =', epochs, ', batch size =', batch_size, ', neurons = ', neurons, ', gives an accuracy of', acc)
 model_name = 'saved_model_'+middle_kept + "_" + act  + "_" + epochs + "_" + batch_size + "_" + neurons + "_" + consensus_type + "_" + depth
 if acc > 0.90:
-    model.save('saved_models/'+model_name)
+    model.save('../../saved_models/'+model_name)
 else:
     print(model_name + " does not have high enough accuracy to save model")
 

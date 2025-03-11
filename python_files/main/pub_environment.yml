@@ -2,10 +2,10 @@ name: ML_envi
 dependencies:
   - python
   - numpy
-  - keras >= 3.0
+  - keras = 2.9
   - scikit-learn
   - pandas
   - tensorflow
-  - pip:
-    - scikeras
+  - pip
+
   
