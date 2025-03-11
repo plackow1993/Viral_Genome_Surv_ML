@@ -1,5 +1,7 @@
 # Public Repository for "Viral Genome Surveillance via Modifiable Microarray Sequencing and a Supervised Stack Ensemble Neural Network Model: SARS-CoV-2 as a Case Study"
 
+Basic environment for macOS is in environment/pub_environment.yml
+
 The models used individually (top 278 as indicated in the paper) are saved in "saved_models".
 
 The meta-models from stacking (logistic regression and neural network) are saved in "saved_metas_stacking".
