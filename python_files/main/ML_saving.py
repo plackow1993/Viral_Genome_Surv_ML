@@ -48,6 +48,7 @@ if depth < 2:
 
 
 #load training and testing data (added ../ to keep the data files in the orginal directory, remove if they are in the same directory)
+# use join ... .py in the datasets directory to separate the files to make this work, otherwilse you can do training_data = pd.read_csv(wyup_train.csv, index_col = 0)
 training_data = pd.DataFrame()
 for index in range(0,10):
     training_data = pd.concat([training_data, pd.read_csv('../../datasets/wyup_train_{}.csv'.format(index), delimiter = ',', index_col = 0)])
